@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Quest - Gamify Your Life</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Productivity Quest" class="logo">
+                <span class="nav-title">Productivity Quest</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="study.html" class="nav-link">Study</a>
+                <a href="gym.html" class="nav-link">Gym</a>
+                <a href="calendar.html" class="nav-link">Calendar</a>
+            </div>
+            <div class="xp-display">
+                <div class="xp-info">
+                    <span class="level">Level <span id="nav-level">1</span></span>
+                    <span class="xp">XP: <span id="nav-xp">0</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to Productivity Quest</h1>
+                <p class="hero-subtitle">Level up your life through gamified productivity</p>
+                
+                <div class="name-setup" id="name-setup">
+                    <h2>Enter Your Name to Begin</h2>
+                    <div class="input-group">
+                        <input type="text" id="user-name" placeholder="Your name" class="name-input">
+                        <button id="save-name" class="btn btn-primary">Start Quest</button>
+                    </div>
+                </div>
+
+                <div class="welcome-back" id="welcome-back" style="display: none;">
+                    <h2>Welcome back, <span id="display-name"></span>!</h2>
+                    <p>Ready to continue your productivity quest?</p>
+                    <div class="quick-actions">
+                        <a href="profile.html" class="btn btn-primary">View Profile</a>
+                        <a href="study.html" class="btn btn-secondary">Study Mode</a>
+                        <a href="gym.html" class="btn btn-accent">Gym Mode</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-overview" id="stats-overview" style="display: none;">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Current Level</h3>
+                        <p class="stat-value" id="level-display">1</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total XP</h3>
+                        <p class="stat-value" id="xp-display">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Current Rank</h3>
+                        <p class="stat-value" id="rank-display">E-Rank</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Tasks Today</h3>
+                        <p class="stat-value" id="home-tasks">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Streak</h3>
+                        <p class="stat-value" id="home-streak">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="daily-checkin" id="daily-checkin" style="display: none;">
+            <div class="checkin-container">
+                <h2>Daily Check-in</h2>
+                <p>Mark if you missed any main tasks yesterday to adjust your XP</p>
+                <button id="missed-day-btn" class="btn btn-danger">
+                    <i class="fas fa-minus-circle"></i>
+                    Mark Missed Day
+                </button>
+                <p class="missed-day-info">This will deduct XP for incomplete main tasks</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Productivity Quest. Level up your life!</p>
+    </footer>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/xp-system.js"></script>
+    <script src="assets/js/task-manager.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the app
+            DataManager.init();
+            XPSystem.init();
+            TaskManager.init();
+            Navigation.init();
+
+            // UI Elements
+            const nameSetup = document.getElementById('name-setup');
+            const welcomeBack = document.getElementById('welcome-back');
+            const statsOverview = document.getElementById('stats-overview');
+            const dailyCheckin = document.getElementById('daily-checkin');
+            const userNameInput = document.getElementById('user-name');
+            const saveNameBtn = document.getElementById('save-name');
+            const displayName = document.getElementById('display-name');
+            const missedDayBtn = document.getElementById('missed-day-btn');
+
+            // Check if user exists
+            const userData = DataManager.getUserData();
+            if (userData.name) {
+                showWelcomeBack(userData.name);
+            } else {
+                showNameSetup();
+            }
+
+            // Save name functionality
+            saveNameBtn.addEventListener('click', function() {
+                const name = userNameInput.value.trim();
+                if (name) {
+                    DataManager.updateUserData({ name: name });
+                    showWelcomeBack(name);
+                }
+            });
+
+            userNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveNameBtn.click();
+                }
+            });
+
+            // Missed day functionality
+            missedDayBtn.addEventListener('click', function() {
+                const tasks = TaskManager.getTasks();
+                const mainTasks = tasks.filter(task => task.type === 'main' && !task.completed);
+                
+                if (mainTasks.length > 0) {
+                    const xpToDeduct = mainTasks.length * 25; // 25 XP per main task
+                    XPSystem.deductXP(xpToDeduct);
+                    
+                    // Mark tasks as missed for the day
+                    mainTasks.forEach(task => {
+                        task.missedDays = (task.missedDays || 0) + 1;
+                    });
+                    TaskManager.saveTasks(tasks);
+                    
+                    Utils.showNotification(`Deducted ${xpToDeduct} XP for ${mainTasks.length} incomplete main tasks.`, 'warning');
+                    updateStats();
+                } else {
+                    Utils.showNotification('No incomplete main tasks found.', 'info');
+                }
+            });
+
+            function showNameSetup() {
+                nameSetup.style.display = 'block';
+                welcomeBack.style.display = 'none';
+                statsOverview.style.display = 'none';
+                dailyCheckin.style.display = 'none';
+            }
+
+            function showWelcomeBack(name) {
+                nameSetup.style.display = 'none';
+                welcomeBack.style.display = 'block';
+                statsOverview.style.display = 'block';
+                dailyCheckin.style.display = 'block';
+                displayName.textContent = name;
+                updateStats();
+            }
+
+            function updateStats() {
+                const userData = DataManager.getUserData();
+                const xpData = XPSystem.getXPData();
+                const tasks = TaskManager.getTasks();
+                const todayTasks = tasks.filter(task => {
+                    const taskDate = new Date(task.createdAt).toDateString();
+                    const today = new Date().toDateString();
+                    return taskDate === today;
+                });
+
+                document.getElementById('level-display').textContent = xpData.level || 1;
+                document.getElementById('xp-display').textContent = xpData.totalXP || 0;
+                document.getElementById('home-tasks').textContent = todayTasks.length;
+                document.getElementById('home-streak').textContent = userData.streak || 0;
+                
+                // Display rank with color
+                const rankDisplay = document.getElementById('rank-display');
+                if (xpData.rank) {
+                    rankDisplay.textContent = xpData.rank.name;
+                    rankDisplay.style.color = xpData.rank.color;
+                } else {
+                    rankDisplay.textContent = 'E-Rank';
+                    rankDisplay.style.color = '#8B5A3C';
+                }
+            }
+
+            // Listen for XP updates
+            document.addEventListener('xpUpdated', updateStats);
+        });
+    </script>
+</body>
+</html>

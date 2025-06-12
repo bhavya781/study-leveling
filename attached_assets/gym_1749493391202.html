@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Mode - Productivity Quest</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Productivity Quest" class="logo">
+                <span class="nav-title">Productivity Quest</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="study.html" class="nav-link">Study</a>
+                <a href="gym.html" class="nav-link active">Gym</a>
+                <a href="calendar.html" class="nav-link">Calendar</a>
+            </div>
+            <div class="xp-display">
+                <div class="xp-info">
+                    <span class="level">Level <span id="nav-level">1</span></span>
+                    <span class="xp">XP: <span id="nav-xp">0</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="gym-header">
+            <div class="header-container">
+                <h1><i class="fas fa-dumbbell"></i> Gym Mode</h1>
+                <p>Power up your body and earn XP for every workout!</p>
+            </div>
+        </section>
+
+        <section class="workout-timer">
+            <div class="timer-container">
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <defs>
+                                <linearGradient id="workoutGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#11998e;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#38ef7d;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="45" class="timer-bg"></circle>
+                            <circle cx="50" cy="50" r="45" class="timer-progress" id="workout-timer-progress" style="stroke: url(#workoutGradient)"></circle>
+                        </svg>
+                        <div class="timer-text">
+                            <span id="workout-timer-minutes">30</span>:<span id="workout-timer-seconds">00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="start-workout-timer" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Workout
+                    </button>
+                    <button id="pause-workout-timer" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button id="reset-workout-timer" class="btn btn-accent">
+                        <i class="fas fa-refresh"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="timer-settings">
+                    <label for="workout-duration">Workout Duration (minutes):</label>
+                    <select id="workout-duration">
+                        <option value="15">15 minutes</option>
+                        <option value="30" selected>30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                        <option value="90">90 minutes</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="gym-stats">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Workouts Today</h3>
+                        <p class="stat-value" id="workouts-today">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Workout Streak</h3>
+                        <p class="stat-value" id="workout-streak">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Gym XP Earned</h3>
+                        <p class="stat-value" id="gym-xp-earned">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Workout Time</h3>
+                        <p class="stat-value" id="total-workout-time">0h 0m</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Current Rank</h3>
+                        <p class="stat-value" id="current-rank">E-Rank</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <div class="actions-container">
+                <h2>Quick XP Actions</h2>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="gainXP(5, 'Did warm-up exercises')">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span>Warm-up</span>
+                        <small>+5 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(10, 'Completed cardio session')">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>Cardio</span>
+                        <small>+10 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(15, 'Strength training session')">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>Strength Training</span>
+                        <small>+15 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(8, 'Stretching and flexibility')">
+                        <i class="fas fa-child"></i>
+                        <span>Stretching</span>
+                        <small>+8 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(20, 'Completed full workout')">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Full Workout</span>
+                        <small>+20 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(25, 'Personal record achieved')">
+                        <i class="fas fa-medal"></i>
+                        <span>Personal Record</span>
+                        <small>+25 XP</small>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="workout-tracker">
+            <div class="tracker-container">
+                <h2>Exercise Tracker</h2>
+                <div class="exercise-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exercise-name">Exercise</label>
+                            <input type="text" id="exercise-name" placeholder="e.g., Push-ups, Squats">
+                        </div>
+                        <div class="form-group">
+                            <label for="sets">Sets</label>
+                            <input type="number" id="sets" min="1" value="3">
+                        </div>
+                        <div class="form-group">
+                            <label for="reps">Reps</label>
+                            <input type="number" id="reps" min="1" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (lbs)</label>
+                            <input type="number" id="weight" min="0" step="0.5" placeholder="Optional">
+                        </div>
+                    </div>
+                    <button id="add-exercise" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
+                </div>
+                
+                <div class="exercise-log" id="exercise-log">
+                    <h3>Today's Exercises</h3>
+                    <div class="exercise-list" id="exercise-list">
+                        <!-- Exercises will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gym-tasks">
+            <div class="tasks-container">
+                <h2>Fitness Tasks</h2>
+                <div class="gym-task-list" id="gym-task-list">
+                    <!-- Gym tasks will be populated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/xp-system.js"></script>
+    <script src="assets/js/task-manager.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script>
+        let workoutTimerInterval;
+        let currentWorkoutTime = 30 * 60; // 30 minutes in seconds
+        let isWorkoutRunning = false;
+        let totalWorkoutDuration = 30 * 60;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modules
+            DataManager.init();
+            XPSystem.init();
+            TaskManager.init();
+            Navigation.init();
+
+            // Load gym data
+            loadGymStats();
+            loadGymTasks();
+            loadTodaysExercises();
+
+            // Timer controls
+            document.getElementById('start-workout-timer').addEventListener('click', startWorkoutTimer);
+            document.getElementById('pause-workout-timer').addEventListener('click', pauseWorkoutTimer);
+            document.getElementById('reset-workout-timer').addEventListener('click', resetWorkoutTimer);
+            document.getElementById('workout-duration').addEventListener('change', updateWorkoutDuration);
+
+            // Exercise tracker
+            document.getElementById('add-exercise').addEventListener('click', addExercise);
+
+            // Listen for XP updates
+            document.addEventListener('xpUpdated', loadGymStats);
+        });
+
+        function startWorkoutTimer() {
+            if (!isWorkoutRunning) {
+                isWorkoutRunning = true;
+                document.getElementById('start-workout-timer').style.display = 'none';
+                document.getElementById('pause-workout-timer').style.display = 'inline-block';
+                
+                workoutTimerInterval = setInterval(function() {
+                    currentWorkoutTime--;
+                    updateWorkoutTimerDisplay();
+                    updateWorkoutTimerProgress();
+                    
+                    if (currentWorkoutTime <= 0) {
+                        completeWorkout();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseWorkoutTimer() {
+            isWorkoutRunning = false;
+            clearInterval(workoutTimerInterval);
+            document.getElementById('start-workout-timer').style.display = 'inline-block';
+            document.getElementById('pause-workout-timer').style.display = 'none';
+        }
+
+        function resetWorkoutTimer() {
+            pauseWorkoutTimer();
+            const duration = parseInt(document.getElementById('workout-duration').value);
+            currentWorkoutTime = duration * 60;
+            totalWorkoutDuration = duration * 60;
+            updateWorkoutTimerDisplay();
+            updateWorkoutTimerProgress();
+        }
+
+        function updateWorkoutDuration() {
+            if (!isWorkoutRunning) {
+                resetWorkoutTimer();
+            }
+        }
+
+        function updateWorkoutTimerDisplay() {
+            const minutes = Math.floor(currentWorkoutTime / 60);
+            const seconds = currentWorkoutTime % 60;
+            
+            document.getElementById('workout-timer-minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('workout-timer-seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function updateWorkoutTimerProgress() {
+            const progress = ((totalWorkoutDuration - currentWorkoutTime) / totalWorkoutDuration) * 100;
+            const circumference = 2 * Math.PI * 45;
+            const strokeDashoffset = circumference - (progress / 100) * circumference;
+            
+            document.getElementById('workout-timer-progress').style.strokeDashoffset = strokeDashoffset;
+        }
+
+        function completeWorkout() {
+            pauseWorkoutTimer();
+            const duration = Math.floor(totalWorkoutDuration / 60);
+            const xpReward = Math.floor(duration / 5) * 5; // 5 XP per 5-minute block
+            
+            XPSystem.addXP(xpReward);
+            
+            // Update gym stats
+            const gymData = DataManager.getGymData();
+            gymData.workoutsToday = (gymData.workoutsToday || 0) + 1;
+            gymData.totalWorkoutTime = (gymData.totalWorkoutTime || 0) + duration;
+            gymData.xpEarned = (gymData.xpEarned || 0) + xpReward;
+            gymData.lastWorkoutDate = new Date().toDateString();
+            
+            // Update streak
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (gymData.lastWorkoutDate === yesterday || gymData.lastWorkoutDate === today) {
+                gymData.streak = (gymData.streak || 0) + 1;
+            } else {
+                gymData.streak = 1;
+            }
+            
+            DataManager.setGymData(gymData);
+            
+            Utils.showNotification(`Workout complete! +${xpReward} XP earned!`, 'success');
+            loadGymStats();
+            resetWorkoutTimer();
+        }
+
+        function loadGymStats() {
+            const gymData = DataManager.getGymData();
+            const xpData = XPSystem.getXPData();
+            const today = new Date().toDateString();
+            
+            // Reset daily stats if it's a new day
+            if (gymData.lastWorkoutDate !== today) {
+                gymData.workoutsToday = 0;
+            }
+            
+            document.getElementById('workouts-today').textContent = gymData.workoutsToday || 0;
+            document.getElementById('workout-streak').textContent = gymData.streak || 0;
+            document.getElementById('gym-xp-earned').textContent = gymData.xpEarned || 0;
+            
+            // Format and display total workout time
+            const totalMinutes = gymData.totalWorkoutTime || 0;
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            document.getElementById('total-workout-time').textContent = `${hours}h ${minutes}m`;
+            
+            // Display current rank with color
+            const rankDisplay = document.getElementById('current-rank');
+            if (xpData.rank) {
+                rankDisplay.textContent = xpData.rank.name;
+                rankDisplay.style.color = xpData.rank.color;
+            } else {
+                rankDisplay.textContent = 'E-Rank';
+                rankDisplay.style.color = '#8B5A3C';
+            }
+        }
+
+        function loadGymTasks() {
+            const tasks = TaskManager.getTasksByType('gym');
+            const gymTaskList = document.getElementById('gym-task-list');
+            
+            if (tasks.length === 0) {
+                gymTaskList.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No gym tasks yet. Add tasks from your profile page!</p>';
+                return;
+            }
+            
+            gymTaskList.innerHTML = tasks.map(task => TaskManager.renderTask(task)).join('');
+        }
+
+        function addExercise() {
+            const exerciseName = document.getElementById('exercise-name').value.trim();
+            const sets = parseInt(document.getElementById('sets').value);
+            const reps = parseInt(document.getElementById('reps').value);
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            
+            if (!exerciseName) {
+                Utils.showNotification('Please enter an exercise name', 'error');
+                return;
+            }
+            
+            if (sets <= 0 || reps <= 0) {
+                Utils.showNotification('Sets and reps must be greater than 0', 'error');
+                return;
+            }
+            
+            const exercise = {
+                id: Utils.generateId(),
+                name: exerciseName,
+                sets: sets,
+                reps: reps,
+                weight: weight,
+                date: new Date().toISOString(),
+                completed: false
+            };
+            
+            const gymData = DataManager.getGymData();
+            gymData.exercises = gymData.exercises || [];
+            gymData.exercises.push(exercise);
+            DataManager.setGymData(gymData);
+            
+            // Award XP for adding exercise
+            const xpReward = 5;
+            XPSystem.addXP(xpReward);
+            
+            Utils.showNotification(`Exercise added! +${xpReward} XP`, 'success');
+            
+            // Clear form
+            document.getElementById('exercise-name').value = '';
+            document.getElementById('sets').value = '3';
+            document.getElementById('reps').value = '10';
+            document.getElementById('weight').value = '';
+            
+            loadTodaysExercises();
+        }
+
+        function loadTodaysExercises() {
+            const gymData = DataManager.getGymData();
+            const exercises = gymData.exercises || [];
+            const today = new Date().toDateString();
+            
+            const todaysExercises = exercises.filter(exercise => {
+                const exerciseDate = new Date(exercise.date).toDateString();
+                return exerciseDate === today;
+            });
+            
+            const exerciseList = document.getElementById('exercise-list');
+            
+            if (todaysExercises.length === 0) {
+                exerciseList.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No exercises logged today. Add your first exercise above!</p>';
+                return;
+            }
+            
+            exerciseList.innerHTML = todaysExercises.map(exercise => {
+                const weightDisplay = exercise.weight > 0 ? ` @ ${exercise.weight} lbs` : '';
+                return `
+                    <div class="exercise-item">
+                        <div class="exercise-details">
+                            <div class="exercise-name">${exercise.name}</div>
+                            <div class="exercise-stats">${exercise.sets} sets × ${exercise.reps} reps${weightDisplay}</div>
+                        </div>
+                        <button class="btn btn-small btn-danger" onclick="removeExercise('${exercise.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeExercise(exerciseId) {
+            const gymData = DataManager.getGymData();
+            gymData.exercises = gymData.exercises.filter(exercise => exercise.id !== exerciseId);
+            DataManager.setGymData(gymData);
+            
+            Utils.showNotification('Exercise removed', 'info');
+            loadTodaysExercises();
+        }
+
+        // Initialize timer display
+        updateWorkoutTimerDisplay();
+        updateWorkoutTimerProgress();
+    </script>
+</body>
+</html>

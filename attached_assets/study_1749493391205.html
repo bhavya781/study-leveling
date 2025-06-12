@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Mode - Productivity Quest</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Productivity Quest" class="logo">
+                <span class="nav-title">Productivity Quest</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="study.html" class="nav-link active">Study</a>
+                <a href="gym.html" class="nav-link">Gym</a>
+                <a href="calendar.html" class="nav-link">Calendar</a>
+            </div>
+            <div class="xp-display">
+                <div class="xp-info">
+                    <span class="level">Level <span id="nav-level">1</span></span>
+                    <span class="xp">XP: <span id="nav-xp">0</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="study-header">
+            <div class="header-container">
+                <h1><i class="fas fa-book"></i> Study Mode</h1>
+                <p>Focus on your learning and earn XP for your dedication!</p>
+            </div>
+        </section>
+
+        <section class="study-timer">
+            <div class="timer-container">
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="45" class="timer-bg"></circle>
+                            <circle cx="50" cy="50" r="45" class="timer-progress" id="timer-progress"></circle>
+                        </svg>
+                        <div class="timer-text">
+                            <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="start-timer" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Start Session
+                    </button>
+                    <button id="pause-timer" class="btn btn-secondary" style="display: none;">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button id="reset-timer" class="btn btn-accent">
+                        <i class="fas fa-refresh"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="timer-settings">
+                    <label for="study-duration">Session Duration:</label>
+                    <div class="duration-input-group">
+                        <select id="study-duration">
+                            <option value="15">15 minutes</option>
+                            <option value="25" selected>25 minutes (Pomodoro)</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                            <option value="custom">Custom Duration</option>
+                        </select>
+                        <div id="custom-duration-input" style="display: none; margin-top: 1rem;">
+                            <label for="custom-minutes">Minutes:</label>
+                            <input type="number" id="custom-minutes" min="1" max="300" placeholder="Enter minutes" style="width: 120px; margin-left: 0.5rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="study-stats">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Sessions Today</h3>
+                        <p class="stat-value" id="sessions-today">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Study Streak</h3>
+                        <p class="stat-value" id="study-streak">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total XP Earned</h3>
+                        <p class="stat-value" id="study-xp-earned">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Study Time</h3>
+                        <p class="stat-value" id="total-study-time">0h 0m</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Current Rank</h3>
+                        <p class="stat-value" id="current-rank">E-Rank</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <div class="actions-container">
+                <h2>Quick XP Actions</h2>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="gainXP(5, 'Read a chapter')">
+                        <i class="fas fa-book-open"></i>
+                        <span>Read Chapter</span>
+                        <small>+5 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(10, 'Completed practice problems')">
+                        <i class="fas fa-calculator"></i>
+                        <span>Practice Problems</span>
+                        <small>+10 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(15, 'Took detailed notes')">
+                        <i class="fas fa-pen"></i>
+                        <span>Take Notes</span>
+                        <small>+15 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(20, 'Completed assignment')">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Complete Assignment</span>
+                        <small>+20 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(25, 'Finished studying for exam')">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Exam Prep</span>
+                        <small>+25 XP</small>
+                    </button>
+                    
+                    <button class="action-btn" onclick="gainXP(30, 'Completed project milestone')">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Project Work</span>
+                        <small>+30 XP</small>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="study-tasks">
+            <div class="tasks-container">
+                <h2>Study Tasks</h2>
+                <div class="study-task-list" id="study-task-list">
+                    <!-- Study tasks will be populated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/xp-system.js"></script>
+    <script src="assets/js/task-manager.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script>
+        let timerInterval;
+        let currentTime = 25 * 60; // 25 minutes in seconds
+        let isRunning = false;
+        let totalDuration = 25 * 60;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modules
+            DataManager.init();
+            XPSystem.init();
+            TaskManager.init();
+            Navigation.init();
+
+            // Load study data
+            loadStudyStats();
+            loadStudyTasks();
+
+            // Timer controls
+            document.getElementById('start-timer').addEventListener('click', startTimer);
+            document.getElementById('pause-timer').addEventListener('click', pauseTimer);
+            document.getElementById('reset-timer').addEventListener('click', resetTimer);
+            document.getElementById('study-duration').addEventListener('change', updateDuration);
+            
+            // Custom duration input
+            document.getElementById('study-duration').addEventListener('change', toggleCustomInput);
+            document.getElementById('custom-minutes').addEventListener('input', updateCustomDuration);
+
+            // Listen for XP updates
+            document.addEventListener('xpUpdated', loadStudyStats);
+        });
+
+        function startTimer() {
+            if (!isRunning) {
+                // Validate custom duration if selected
+                const select = document.getElementById('study-duration');
+                if (select.value === 'custom') {
+                    const customMinutes = parseInt(document.getElementById('custom-minutes').value);
+                    if (!customMinutes || customMinutes < 1) {
+                        Utils.showNotification('Please enter a valid duration in minutes', 'error');
+                        return;
+                    }
+                }
+                
+                isRunning = true;
+                document.getElementById('start-timer').style.display = 'none';
+                document.getElementById('pause-timer').style.display = 'inline-block';
+                
+                timerInterval = setInterval(function() {
+                    currentTime--;
+                    updateTimerDisplay();
+                    updateTimerProgress();
+                    
+                    if (currentTime <= 0) {
+                        completeSession();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('start-timer').style.display = 'inline-block';
+            document.getElementById('pause-timer').style.display = 'none';
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            const duration = getDurationInMinutes();
+            currentTime = duration * 60;
+            totalDuration = duration * 60;
+            updateTimerDisplay();
+            updateTimerProgress();
+        }
+
+        function updateDuration() {
+            if (!isRunning) {
+                resetTimer();
+            }
+        }
+
+        function toggleCustomInput() {
+            const select = document.getElementById('study-duration');
+            const customInput = document.getElementById('custom-duration-input');
+            
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+                document.getElementById('custom-minutes').focus();
+            } else {
+                customInput.style.display = 'none';
+            }
+            
+            if (!isRunning) {
+                resetTimer();
+            }
+        }
+
+        function updateCustomDuration() {
+            if (!isRunning) {
+                resetTimer();
+            }
+        }
+
+        function getDurationInMinutes() {
+            const select = document.getElementById('study-duration');
+            if (select.value === 'custom') {
+                const customMinutes = parseInt(document.getElementById('custom-minutes').value);
+                return customMinutes && customMinutes > 0 ? customMinutes : 25;
+            }
+            return parseInt(select.value);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentTime / 60);
+            const seconds = currentTime % 60;
+            
+            document.getElementById('timer-minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('timer-seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function updateTimerProgress() {
+            const progress = ((totalDuration - currentTime) / totalDuration) * 100;
+            const circumference = 2 * Math.PI * 45;
+            const strokeDashoffset = circumference - (progress / 100) * circumference;
+            
+            document.getElementById('timer-progress').style.strokeDashoffset = strokeDashoffset;
+        }
+
+        function completeSession() {
+            pauseTimer();
+            const duration = Math.floor(totalDuration / 60);
+            const xpReward = duration; // 1 XP per minute studied
+            
+            XPSystem.addXP(xpReward);
+            
+            // Update study stats
+            const studyData = DataManager.getStudyData();
+            studyData.sessionsToday = (studyData.sessionsToday || 0) + 1;
+            studyData.totalStudyTime = (studyData.totalStudyTime || 0) + duration;
+            studyData.xpEarned = (studyData.xpEarned || 0) + xpReward;
+            studyData.lastSessionDate = new Date().toDateString();
+            
+            // Update streak
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (studyData.lastSessionDate === yesterday || studyData.lastSessionDate === today) {
+                studyData.streak = (studyData.streak || 0) + 1;
+            } else {
+                studyData.streak = 1;
+            }
+            
+            DataManager.setStudyData(studyData);
+            
+            Utils.showNotification(`Session complete! +${xpReward} XP earned!`, 'success');
+            loadStudyStats();
+            resetTimer();
+        }
+
+        function loadStudyStats() {
+            const studyData = DataManager.getStudyData();
+            const xpData = XPSystem.getXPData();
+            const today = new Date().toDateString();
+            
+            // Reset daily stats if it's a new day
+            if (studyData.lastSessionDate !== today) {
+                studyData.sessionsToday = 0;
+            }
+            
+            document.getElementById('sessions-today').textContent = studyData.sessionsToday || 0;
+            document.getElementById('study-streak').textContent = studyData.streak || 0;
+            document.getElementById('study-xp-earned').textContent = studyData.xpEarned || 0;
+            
+            // Format and display total study time
+            const totalMinutes = studyData.totalStudyTime || 0;
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            document.getElementById('total-study-time').textContent = `${hours}h ${minutes}m`;
+            
+            // Display current rank with color
+            const rankDisplay = document.getElementById('current-rank');
+            if (xpData.rank) {
+                rankDisplay.textContent = xpData.rank.name;
+                rankDisplay.style.color = xpData.rank.color;
+            } else {
+                rankDisplay.textContent = 'E-Rank';
+                rankDisplay.style.color = '#8B5A3C';
+            }
+        }
+
+        function loadStudyTasks() {
+            const tasks = TaskManager.getTasksByType('study');
+            const studyTaskList = document.getElementById('study-task-list');
+            
+            if (tasks.length === 0) {
+                studyTaskList.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No study tasks yet. Add tasks from your profile page!</p>';
+                return;
+            }
+            
+            studyTaskList.innerHTML = tasks.map(task => TaskManager.renderTask(task)).join('');
+        }
+
+        // Initialize timer display
+        updateTimerDisplay();
+        updateTimerProgress();
+    </script>
+</body>
+</html>

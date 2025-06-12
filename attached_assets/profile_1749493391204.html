@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Productivity Quest</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Productivity Quest" class="logo">
+                <span class="nav-title">Productivity Quest</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link active">Profile</a>
+                <a href="study.html" class="nav-link">Study</a>
+                <a href="gym.html" class="nav-link">Gym</a>
+                <a href="calendar.html" class="nav-link">Calendar</a>
+            </div>
+            <div class="xp-display">
+                <div class="xp-info">
+                    <span class="level">Level <span id="nav-level">1</span></span>
+                    <span class="xp">XP: <span id="nav-xp">0</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="profile-header">
+            <div class="profile-container">
+                <div class="profile-info">
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h1 id="profile-name">Player</h1>
+                        <div class="rank-info">
+                            <span class="user-rank rank-badge" id="profile-rank">E-Rank</span>
+                            <span class="user-title" id="profile-title">Beginner</span>
+                        </div>
+                        <div class="level-info">
+                            <span class="level-badge">Level <span id="level-display">1</span></span>
+                            <div class="xp-progress">
+                                <div class="xp-bar">
+                                    <div class="xp-fill" id="xp-fill"></div>
+                                </div>
+                                <span class="xp-text"><span id="xp-display">0</span> / <span id="xp-needed">100</span> XP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Streak: <span id="profile-streak">0</span> days</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-trophy"></i>
+                        <span>Total Tasks: <span id="total-tasks">0</span></span>
+                    </div>
+                    <div class="stat-item">
+                        <button class="btn btn-small btn-danger" onclick="handleMissedDay()">
+                            <i class="fas fa-calendar-times"></i> Missed Day
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tasks-section">
+            <div class="tasks-container">
+                <!-- Main Tasks -->
+                <div class="task-category">
+                    <div class="category-header">
+                        <h2><i class="fas fa-star"></i> Main Tasks</h2>
+                        <span class="category-info">25 XP each</span>
+                        <button class="btn btn-small btn-primary" onclick="openTaskModal('main')">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="task-list" id="main-tasks"></div>
+                </div>
+
+                <!-- Passive Tasks -->
+                <div class="task-category">
+                    <div class="category-header">
+                        <h2><i class="fas fa-clock"></i> Passive Tasks</h2>
+                        <span class="category-info">10 XP each</span>
+                        <button class="btn btn-small btn-secondary" onclick="openTaskModal('passive')">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="task-list" id="passive-tasks"></div>
+                </div>
+
+                <!-- Bulky Tasks -->
+                <div class="task-category">
+                    <div class="category-header">
+                        <h2><i class="fas fa-dumbbell"></i> Bulky Tasks</h2>
+                        <span class="category-info">50 XP each</span>
+                        <button class="btn btn-small btn-accent" onclick="openTaskModal('bulky')">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="task-list" id="bulky-tasks"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ai-assistant-section">
+            <div class="ai-container">
+                <div class="ai-header">
+                    <h2><i class="fas fa-robot"></i> AI Assistant</h2>
+                    <div class="ai-controls">
+                        <div class="api-key-setup">
+                            <input type="password" id="groq-api-key" placeholder="Enter Groq API Key" class="api-input">
+                            <button id="save-api-key" class="btn btn-small btn-primary">Save</button>
+                        </div>
+                        <button id="test-ai-tasks" class="btn btn-small btn-secondary" onclick="testAITaskCreation()">Test Task Creation</button>
+                    </div>
+                </div>
+                
+                <div class="ai-suggested-prompts" id="ai-suggested-prompts" style="display: none;">
+                    <p><strong>Try these prompts:</strong></p>
+                    <div class="prompt-buttons">
+                        <button class="btn btn-small btn-outline" onclick="usePrompt('Create 3 productivity tasks for today')">Daily Tasks</button>
+                        <button class="btn btn-small btn-outline" onclick="usePrompt('Suggest a morning routine with tasks')">Morning Routine</button>
+                        <button class="btn btn-small btn-outline" onclick="usePrompt('Give me workout tasks for this week')">Workout Plan</button>
+                        <button class="btn btn-small btn-outline" onclick="usePrompt('Help me organize my study schedule')">Study Schedule</button>
+                    </div>
+                </div>
+                
+                <div class="ai-chat">
+                    <div class="ai-messages" id="ai-messages">
+                        <div class="ai-message system">
+                            <i class="fas fa-robot"></i>
+                            <p>Hello! I'm your AI assistant. I can help you create workout plans, study schedules, and add tasks to your lists. Enter your Groq API key above to get started!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-input-section">
+                        <div class="input-group">
+                            <input type="text" id="ai-prompt" placeholder="Ask for a workout plan, study schedule, or task suggestions..." class="ai-input" disabled>
+                            <button id="send-prompt" class="btn btn-primary" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Add Task</h3>
+                <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    <div class="form-group">
+                        <label for="task-title">Task Title</label>
+                        <input type="text" id="task-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Description (optional)</label>
+                        <textarea id="task-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date (optional)</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                <button type="submit" form="task-form" class="btn btn-primary">Add Task</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/xp-system.js"></script>
+    <script src="assets/js/task-manager.js"></script>
+    <script src="assets/js/ai-assistant.js"></script>
+    <script src="assets/js/navigation.js"></script>
+    <script>
+        let currentTaskType = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modules
+            DataManager.init();
+            XPSystem.init();
+            TaskManager.init();
+            AIAssistant.init();
+            Navigation.init();
+
+            // Load profile data
+            loadProfileData();
+            loadTasks();
+
+            // Event listeners
+            document.getElementById('task-form').addEventListener('submit', handleTaskSubmit);
+            document.getElementById('save-api-key').addEventListener('click', saveApiKey);
+            document.getElementById('send-prompt').addEventListener('click', sendAIPrompt);
+            document.getElementById('ai-prompt').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendAIPrompt();
+                }
+            });
+
+            // Listen for XP updates
+            document.addEventListener('xpUpdated', loadProfileData);
+            document.addEventListener('tasksUpdated', loadTasks);
+            
+            // Check for saved API key
+            const savedApiKey = localStorage.getItem('groq_api_key');
+            if (savedApiKey) {
+                document.getElementById('groq-api-key').value = savedApiKey;
+                enableAIInput();
+                showSuggestedPrompts();
+            }
+        });
+
+        function loadProfileData() {
+            const userData = DataManager.getUserData();
+            const xpData = XPSystem.getXPData();
+            
+            document.getElementById('profile-name').textContent = userData.name || 'Player';
+            document.getElementById('level-display').textContent = xpData.level;
+            document.getElementById('xp-display').textContent = xpData.currentXP;
+            document.getElementById('xp-needed').textContent = xpData.xpForNextLevel;
+            document.getElementById('profile-streak').textContent = userData.streak || 0;
+            
+            // Update XP progress bar
+            const progressPercent = (xpData.currentXP / xpData.xpForNextLevel) * 100;
+            document.getElementById('xp-fill').style.width = progressPercent + '%';
+            
+            // Update rank and title displays with colors and styling
+            if (xpData.rank) {
+                const rankElement = document.getElementById('profile-rank');
+                const titleElement = document.getElementById('profile-title');
+                
+                rankElement.textContent = xpData.rank.name;
+                rankElement.style.color = xpData.rank.color;
+                rankElement.style.backgroundColor = xpData.rank.color + '20'; // 20% opacity
+                rankElement.className = `user-rank rank-badge rank-${xpData.rank.name.toLowerCase().replace('-rank', '')}`;
+                
+                titleElement.textContent = xpData.rank.title;
+            }
+            
+            // Update total tasks
+            const tasks = TaskManager.getTasks();
+            document.getElementById('total-tasks').textContent = tasks.length;
+        }
+
+        function loadTasks() {
+            const tasks = TaskManager.getTasks();
+            const mainTasks = document.getElementById('main-tasks');
+            const passiveTasks = document.getElementById('passive-tasks');
+            const bulkyTasks = document.getElementById('bulky-tasks');
+
+            // Clear existing tasks
+            mainTasks.innerHTML = '';
+            passiveTasks.innerHTML = '';
+            bulkyTasks.innerHTML = '';
+
+            // Populate tasks by type
+            tasks.forEach(task => {
+                const taskHTML = TaskManager.renderTask(task);
+                switch (task.type) {
+                    case 'main':
+                        mainTasks.innerHTML += taskHTML;
+                        break;
+                    case 'passive':
+                        passiveTasks.innerHTML += taskHTML;
+                        break;
+                    case 'bulky':
+                        bulkyTasks.innerHTML += taskHTML;
+                        break;
+                }
+            });
+
+            // Show empty states
+            if (tasks.filter(t => t.type === 'main').length === 0) {
+                mainTasks.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No main tasks yet. Add your first task!</p>';
+            }
+            if (tasks.filter(t => t.type === 'passive').length === 0) {
+                passiveTasks.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No passive tasks yet. Add your first task!</p>';
+            }
+            if (tasks.filter(t => t.type === 'bulky').length === 0) {
+                bulkyTasks.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No bulky tasks yet. Add your first task!</p>';
+            }
+        }
+
+        function openTaskModal(type) {
+            currentTaskType = type;
+            const modal = document.getElementById('task-modal');
+            const title = document.getElementById('modal-title');
+            
+            const typeLabels = {
+                main: 'Main Task (25 XP)',
+                passive: 'Passive Task (10 XP)',
+                bulky: 'Bulky Task (50 XP)'
+            };
+            
+            title.textContent = `Add ${typeLabels[type]}`;
+            modal.style.display = 'block';
+            
+            // Clear form
+            document.getElementById('task-form').reset();
+        }
+
+        function closeTaskModal() {
+            document.getElementById('task-modal').style.display = 'none';
+            currentTaskType = '';
+        }
+
+        function handleTaskSubmit(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('task-title').value.trim();
+            const description = document.getElementById('task-description').value.trim();
+            const dueDate = document.getElementById('task-due-date').value;
+            
+            if (!title) {
+                Utils.showNotification('Task title is required', 'error');
+                return;
+            }
+            
+            TaskManager.addTask({
+                title: title,
+                description: description,
+                type: currentTaskType,
+                dueDate: dueDate || null
+            });
+            
+            closeTaskModal();
+            loadTasks();
+        }
+
+        function enableAIInput() {
+            AIAssistant.enableAIInput();
+        }
+
+        function showSuggestedPrompts() {
+            AIAssistant.showSuggestedPrompts();
+        }
+
+        // Click outside modal to close
+        window.onclick = function(event) {
+            const modal = document.getElementById('task-modal');
+            if (event.target === modal) {
+                closeTaskModal();
+            }
+        }
+    </script>
+</body>
+</html>

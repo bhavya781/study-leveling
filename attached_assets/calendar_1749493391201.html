@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>365-Day Quest Calendar - Productivity Quest</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/calendar.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="assets/images/logo.svg" alt="Productivity Quest" class="logo">
+                <span class="nav-title">Productivity Quest</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="study.html" class="nav-link">Study</a>
+                <a href="gym.html" class="nav-link">Gym</a>
+                <a href="calendar.html" class="nav-link active">Calendar</a>
+            </div>
+            <div class="xp-display">
+                <div class="xp-info">
+                    <span class="level">Level <span id="nav-level">1</span></span>
+                    <span class="xp">XP: <span id="nav-xp">0</span></span>
+                    <span class="rank">Rank: <span id="nav-rank">E-Rank</span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="calendar-header">
+            <div class="header-container">
+                <h1><i class="fas fa-calendar-check"></i> 365-Day Quest Calendar</h1>
+                <p>Track your daily progress • Earn XP • Build streaks</p>
+            </div>
+        </section>
+
+        <section class="calendar-controls">
+            <div class="controls-container">
+                <div class="calendar-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="completed-days">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="missed-days">0</span>
+                        <span class="stat-label">Missed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="current-streak">0</span>
+                        <span class="stat-label">Current Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="best-streak">0</span>
+                        <span class="stat-label">Best Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="calendar-xp">0</span>
+                        <span class="stat-label">Calendar XP</span>
+                    </div>
+                </div>
+
+                <div class="calendar-actions">
+                    <button class="btn btn-primary" onclick="jumpToToday()">
+                        <i class="fas fa-calendar-day"></i> Go to Today
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetCalendar()">
+                        <i class="fas fa-refresh"></i> Reset Calendar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-grid-section">
+            <div class="calendar-container">
+                <div class="calendar-year-header">
+                    <h2 id="current-year-display">2025 Quest Progress</h2>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <div class="legend-color completed"></div>
+                            <span>Completed</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color missed"></div>
+                            <span>Missed</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color today"></div>
+                            <span>Today</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color future"></div>
+                            <span>Future</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="days-grid" id="days-grid">
+                    <!-- 365 days will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Day Detail Modal -->
+        <div id="day-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-day-title">Day 1</h3>
+                    <button class="modal-close" onclick="closeDayModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="day-status-selector">
+                        <h4>Mark this day as:</h4>
+                        <div class="status-buttons">
+                            <button class="status-btn completed" onclick="setDayStatus('completed')">
+                                <i class="fas fa-check-circle"></i>
+                                Completed (+25 XP)
+                            </button>
+                            <button class="status-btn missed" onclick="setDayStatus('missed')">
+                                <i class="fas fa-times-circle"></i>
+                                Missed
+                            </button>
+                            <button class="status-btn clear" onclick="setDayStatus('')">
+                                <i class="fas fa-eraser"></i>
+                                Clear Status
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="day-summary">
+                        <label for="day-summary-input">Day Summary (3-4 words):</label>
+                        <input type="text" id="day-summary-input" maxlength="30" placeholder="e.g. Mock test done">
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="saveDayData()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="btn btn-outline" onclick="closeDayModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Streak Bonus Modal -->
+        <div id="streak-modal" class="modal">
+            <div class="modal-content streak-celebration">
+                <div class="modal-header">
+                    <h3><i class="fas fa-fire"></i> Streak Bonus!</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="streak-info">
+                        <div class="streak-number" id="streak-bonus-days">7</div>
+                        <p>Day Streak Achieved!</p>
+                        <div class="bonus-xp" id="streak-bonus-xp">+50 XP</div>
+                        <p class="streak-message">Keep up the momentum!</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="closeStreakModal()">
+                        <i class="fas fa-rocket"></i> Continue Quest
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data-manager.js"></script>
+    <script src="assets/js/xp-system.js"></script>
+    <script src="assets/js/task-manager.js"></script>
+    <script src="assets/js/calendar-manager.js"></script>
+    <script src="assets/js/navigation.js"></script>
+</body>
+</html>
